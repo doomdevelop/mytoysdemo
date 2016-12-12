@@ -13,12 +13,10 @@ import org.kozlowski.mytoysdemo.di.MainComponent;
 public class MyToysApplication extends Application {
     private MainComponent mainComponent;
 
-    private static Context context;
     @Override
     public void onCreate() {
         super.onCreate();
         mainComponent = DaggerMainComponent.create();
-        context = getApplicationContext();
     }
 
     public MainComponent getMainComponent() {

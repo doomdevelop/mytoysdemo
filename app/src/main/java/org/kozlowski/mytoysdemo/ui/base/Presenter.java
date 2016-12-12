@@ -1,5 +1,7 @@
 package org.kozlowski.mytoysdemo.ui.base;
 
+import android.os.Bundle;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -25,6 +27,10 @@ public abstract class Presenter<T extends Presenter.View> {
 
     public void finalizeView() {
         isViewAlive.set(false);
+    }
+
+    public void initialize(Bundle extras) {
+
     }
 
     public interface View {

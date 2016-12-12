@@ -7,5 +7,6 @@ import org.kozlowski.mytoysdemo.ui.base.Presenter;
  */
 
 public interface MainView extends Presenter.View {
-
+    void initWebView(String url);
+    void setupDrawerToggle();
 }
