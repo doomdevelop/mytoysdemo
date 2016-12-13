@@ -1,12 +1,9 @@
 package org.kozlowski.mytoysdemo.ui.component.main;
 
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.util.Log;
 
 import org.kozlowski.mytoysdemo.data.remote.ResponseError;
-import org.kozlowski.mytoysdemo.model.Children;
-import org.kozlowski.mytoysdemo.model.ChildrenNode;
 import org.kozlowski.mytoysdemo.model.NavigationEntries;
 import org.kozlowski.mytoysdemo.ui.base.Presenter;
 import org.kozlowski.mytoysdemo.usecase.NavigationEntriesUseCase;
@@ -20,10 +17,12 @@ import javax.inject.Inject;
 
 public class MainPresenter extends Presenter<MainView> {
     final NavigationEntriesUseCase navigationEntriesUseCase;
+
     @Inject
     public MainPresenter(final NavigationEntriesUseCase navigationEntriesUseCase) {
         this.navigationEntriesUseCase = navigationEntriesUseCase;
     }
+
     @Override
     public void initialize(Bundle extras) {
         super.initialize(extras);
@@ -31,17 +30,16 @@ public class MainPresenter extends Presenter<MainView> {
         view.setupDrawerToggle();
         navigationEntriesUseCase.getNavigationEntries(callBack);
     }
+
     private NavigationEntriesUseCase.CallBack callBack = new NavigationEntriesUseCase.CallBack() {
         @Override
-        public void onSuccess(Children children) {
-            if(children instanceof ChildrenNode) {
-                Log.d("PRESENTER", ((ChildrenNode)children).getChildren().get(0).getLabel());
-            }
+        public void onSuccess(NavigationEntries navigationEntries) {
+
         }
 
         @Override
         public void onError(ResponseError error) {
-            Log.d("PRESENTER" ,error.getErrorMessage());
+            Log.d("PRESENTER", error.getErrorMessage());
         }
     };
 

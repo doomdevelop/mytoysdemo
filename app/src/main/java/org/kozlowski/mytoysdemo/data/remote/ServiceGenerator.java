@@ -30,7 +30,7 @@ public class ServiceGenerator {
 
     private Gson createGson() {
         return new GsonBuilder()
-            .registerTypeAdapter(Children.class, new NavigationEntriesDeserializer())
+            .registerTypeAdapter(NavigationEntries.class, new NavigationEntriesDeserializer())
             .create();
     }
 
