@@ -23,29 +23,25 @@ public class NavigationEntriesUseCase {
     }
 
     public void getNavigationEntries(final CallBack callBack){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Children children = null;
-                ResponseWrapper responseWrapper = dataRepository.getNavigationEntries();
-                if(responseWrapper != null){
-                    children = (Children) responseWrapper
-                        .getResponse();
-                }
-                final Children childrenFinal = children;
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    if (childrenFinal != null) {
-                        callBack.onSuccess(childrenFinal);
-                    } else {
-                        callBack.onError(responseWrapper.getError());
-                    }
-                });
+        new Thread(() -> {
+            NavigationEntries navigationEntries = null;
+            ResponseWrapper responseWrapper = dataRepository.getNavigationEntries();
+            if (responseWrapper != null) {
+                navigationEntries = (NavigationEntries) responseWrapper.getResponse();
             }
+            final NavigationEntries navigationEntriesFinal = navigationEntries;
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (navigationEntriesFinal != null) {
+                    callBack.onSuccess(navigationEntriesFinal);
+                } else {
+                    callBack.onError(responseWrapper.getError());
+                }
+            });
         }).start();
     }
 
     public interface CallBack{
-        void onSuccess(Children children);
+        void onSuccess(NavigationEntries navigationEntries);
 
         void onError(ResponseError error);
     }
