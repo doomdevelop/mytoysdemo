@@ -23,4 +23,5 @@ public class ExampleInstrumentedTest {
 
         assertEquals("org.kozlowski.mytoysdemo", appContext.getPackageName());
     }
+
 }

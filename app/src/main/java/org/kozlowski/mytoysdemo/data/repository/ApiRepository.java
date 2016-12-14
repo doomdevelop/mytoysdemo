@@ -60,5 +60,4 @@ public class ApiRepository {
             return new ResponseWrapper(new ResponseError(Constants.KEY_UNKNOWN_ERROR));
         }
     }
-
 }
