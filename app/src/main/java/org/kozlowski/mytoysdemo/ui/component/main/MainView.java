@@ -16,7 +16,7 @@ public interface MainView extends Presenter.View {
 
     void setupRecyclerView();
 
-    void setNavigationEntries(List<Children> childrenList);
+    void setNavigationEntries(List<Children> childrenList, String headerTitle);
 
     void closeNavigation();
 

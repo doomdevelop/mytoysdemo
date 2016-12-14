@@ -25,19 +25,11 @@
             android:layout_height="wrap_content"/>
     </FrameLayout>
 
-    <!--<FrameLayout-->
-    <!--android:id="@+id/content_frame"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_gravity="left|start"-->
-    <!--android:background="@android:color/holo_red_dark"-->
-    <!--android:fitsSystemWindows="false">-->
-    <!--</FrameLayout>-->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_navigation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="left|start"
-        android:scrollbars="vertical"
-        android:clipToPadding="false"/>
+        android:background="@android:color/white"
+        android:scrollbars="vertical"/>
 </android.support.v4.widget.DrawerLayout>

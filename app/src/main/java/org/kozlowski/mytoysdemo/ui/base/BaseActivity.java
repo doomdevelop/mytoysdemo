@@ -18,6 +18,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Presente
     @Bind(R.id.toolbar)
     protected Toolbar toolbar;
 
+    protected Presenter presenter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,8 +32,21 @@ public abstract class BaseActivity extends AppCompatActivity implements Presente
         }
     }
 
-    protected Presenter presenter;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (presenter != null) {
+            presenter.start();
+        }
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (presenter != null) {
+            presenter.finalizeView();
+        }
+    }
     protected abstract void initializePresenter();
 
     public abstract int getLayoutId();

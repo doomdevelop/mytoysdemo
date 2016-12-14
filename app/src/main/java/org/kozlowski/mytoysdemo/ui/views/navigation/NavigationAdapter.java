@@ -7,10 +7,12 @@ import android.view.ViewGroup;
 
 import org.kozlowski.mytoysdemo.R;
 import org.kozlowski.mytoysdemo.model.Children;
+import org.kozlowski.mytoysdemo.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.kozlowski.mytoysdemo.util.Constants.*;
 import static org.kozlowski.mytoysdemo.util.Constants.NAVIGATION_LINK;
 import static org.kozlowski.mytoysdemo.util.Constants.NAVIGATION_NODE;
 import static org.kozlowski.mytoysdemo.util.Constants.NAVIGATION_SECTION;
@@ -23,14 +25,16 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private List<Children> children;
     private final RecyclerItemListener recyclerItemListener;
+    private String headerTitle;
 
     public NavigationAdapter(RecyclerItemListener recyclerItemListener) {
         this.recyclerItemListener = recyclerItemListener;
         this.children = new ArrayList<>(0);
     }
 
-    public void setChildren(List<Children> children) {
+    public void setChildren(List<Children> children, String headerTitle) {
         this.children = children;
+        this.headerTitle = headerTitle;
         notifyDataSetChanged();
     }
 
@@ -38,10 +42,13 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public int getItemViewType(int position) {
         // Just as an example, return 0 or 2 depending on position
         // Note that unlike in ListView adapters, types don't have to be contiguous
-        if (children == null || getItemCount() <= position) {
+        if (position == 0) {
+            return NAVIGATION_HEADER;
+        }
+        if (children == null || children.size() <= 0) {
             return -1;
         }
-        switch (children.get(position).getNavigationType()) {
+        switch (children.get(position - 1).getNavigationType()) {
             case EXTERNAL_LINK:
                 return NAVIGATION_LINK;
             case LINK:
@@ -70,6 +77,10 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.section_item, parent,
                     false);
                 return new SectionItemViewHolder(view);
+            case NAVIGATION_HEADER:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.navigation_header, parent,
+                    false);
+                return new HeaderViewHolder(view, recyclerItemListener);
         }
         return null;
     }
@@ -78,19 +89,23 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case NAVIGATION_LINK:
-                ((LinkItemViewHolder) holder).render(position, children.get(position));
+                ((LinkItemViewHolder) holder).render(position - 1, children.get(position - 1));
                 break;
             case NAVIGATION_NODE:
-                ((NodeItemViewHolder) holder).render(position, children.get(position));
+                ((NodeItemViewHolder) holder).render(position - 1, children.get(position - 1));
                 break;
             case NAVIGATION_SECTION:
-                ((SectionItemViewHolder) holder).render(position, children.get(position));
+                ((SectionItemViewHolder) holder).render(position - 1, children.get(position - 1));
                 break;
+            default:
+                if (position == 0) {
+                    ((HeaderViewHolder) holder).render(headerTitle, headerTitle != null);
+                }
         }
     }
 
     @Override
     public int getItemCount() {
-        return children.size();
+        return children.size() + 1;
     }
 }

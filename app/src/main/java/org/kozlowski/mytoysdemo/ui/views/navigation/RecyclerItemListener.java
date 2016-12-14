@@ -6,4 +6,8 @@ package org.kozlowski.mytoysdemo.ui.views.navigation;
 
 public interface RecyclerItemListener {
     void onItemSelected(int position);
+
+    void onHeaderCloseClicked();
+
+    void onHeaderBackArrowClicked();
 }

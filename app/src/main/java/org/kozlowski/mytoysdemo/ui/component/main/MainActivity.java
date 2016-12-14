@@ -2,14 +2,12 @@ package org.kozlowski.mytoysdemo.ui.component.main;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -17,7 +15,6 @@ import android.webkit.WebView;
 import org.kozlowski.mytoysdemo.MyToysApplication;
 import org.kozlowski.mytoysdemo.R;
 import org.kozlowski.mytoysdemo.model.Children;
-import org.kozlowski.mytoysdemo.model.NavigationEntries;
 import org.kozlowski.mytoysdemo.ui.base.BaseActivity;
 import org.kozlowski.mytoysdemo.ui.views.navigation.NavigationAdapter;
 import org.kozlowski.mytoysdemo.ui.views.navigation.RecyclerItemListener;
@@ -118,11 +115,21 @@ public class MainActivity extends BaseActivity implements MainView {
         public void onItemSelected(int position) {
             presenter.onNavigationItemClicked(position);
         }
+
+        @Override
+        public void onHeaderCloseClicked() {
+            presenter.onNavigationHeaderCloseClicked();
+        }
+
+        @Override
+        public void onHeaderBackArrowClicked() {
+            presenter.onNavigationGoBack();
+        }
     };
 
     @Override
-    public void setNavigationEntries(List<Children> childrenList) {
-        navigationAdapter.setChildren(childrenList);
+    public void setNavigationEntries(List<Children> childrenList, String headerTitle) {
+        navigationAdapter.setChildren(childrenList, headerTitle);
     }
 
     @Override
