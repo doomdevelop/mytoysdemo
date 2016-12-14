@@ -27,6 +27,7 @@ public class NavigationEntriesDeserializer implements JsonDeserializer<Navigatio
     private static final String TAG_CHILDREN = "children";
     private static final String TAG_ROOT = "navigationEntries";
     private static final String TAG_LABEL = "label";
+
     @Override
     public NavigationEntries deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         final JsonObject jsonObject = json.getAsJsonObject();
@@ -51,6 +52,7 @@ public class NavigationEntriesDeserializer implements JsonDeserializer<Navigatio
         final JsonElement labelElement = jsonObject.getAsJsonObject().get(TAG_LABEL);
         final JsonElement childrenElement = jsonObject.getAsJsonObject().get(TAG_CHILDREN);
         final JsonElement urlElement = jsonObject.getAsJsonObject().get(TAG_URL);
+        final JsonElement urlExternalElement = jsonObject.getAsJsonObject().get(TAG_URL);
         JsonArray childrenArray = null;
         if(childrenElement != null) {
             childrenArray = childrenElement.getAsJsonArray();
@@ -63,6 +65,8 @@ public class NavigationEntriesDeserializer implements JsonDeserializer<Navigatio
                 children.setNavigationType(NavigationType.NODE);
             } else if(typeElement.getAsString().equals(NavigationType.LINK.getType())){
                 children.setNavigationType(NavigationType.LINK);
+            } else if (typeElement.getAsString().equals(NavigationType.EXTERNAL_LINK.getType())) {
+                children.setNavigationType(NavigationType.EXTERNAL_LINK);
             }
         }
         children.setLabel(labelElement.getAsString());
