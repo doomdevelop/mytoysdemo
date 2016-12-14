@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,8 +16,15 @@ import android.webkit.WebView;
 
 import org.kozlowski.mytoysdemo.MyToysApplication;
 import org.kozlowski.mytoysdemo.R;
+import org.kozlowski.mytoysdemo.model.Children;
+import org.kozlowski.mytoysdemo.model.NavigationEntries;
 import org.kozlowski.mytoysdemo.ui.base.BaseActivity;
+import org.kozlowski.mytoysdemo.ui.views.navigation.NavigationAdapter;
+import org.kozlowski.mytoysdemo.ui.views.navigation.RecyclerItemListener;
+import org.kozlowski.mytoysdemo.ui.views.navigation.SimpleDividerItemDecoration;
 import org.kozlowski.mytoysdemo.ui.views.webview.MyToysWebViewClient;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,8 +38,12 @@ public class MainActivity extends BaseActivity implements MainView {
     WebView webView;
     @Bind(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @Bind(R.id.rv_navigation)
+    RecyclerView recyclerView;
 
     private ActionBarDrawerToggle drawerToggle;
+    private LinearLayoutManager layoutManager;
+    private NavigationAdapter navigationAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,39 +86,80 @@ public class MainActivity extends BaseActivity implements MainView {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-//                getSupportActionBar().setTitle(mTitle);
+                presenter.onCloseNavigation();
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-//                getSupportActionBar().setTitle(mDrawerTitle);
+                presenter.onOpenNavigation();
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
 
         drawerLayout.addDrawerListener(drawerToggle);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // The action bar home/up action should open or close the drawer.
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public void setupRecyclerView() {
+        layoutManager = new LinearLayoutManager(this);
+        navigationAdapter = new NavigationAdapter(recyclerItemListener);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+        recyclerView.setAdapter(navigationAdapter);
+        recyclerView.setHasFixedSize(false);
     }
+
+    private RecyclerItemListener recyclerItemListener = new RecyclerItemListener() {
+        @Override
+        public void onItemSelected(int position) {
+            presenter.onNavigationItemClicked(position);
+        }
+    };
+
+    @Override
+    public void setNavigationEntries(List<Children> childrenList) {
+        navigationAdapter.setChildren(childrenList);
+    }
+
+    @Override
+    public void closeNavigation() {
+        drawerLayout.closeDrawer(Gravity.LEFT);
+    }
+
+    @Override
+    public void loadUrl(String url) {
+        webView.loadUrl(url);
+    }
+
+    @Override
+    public void loadPreviewPageOnWebView() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            finish();
+        }
+    }
+
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // The action bar home/up action should open or close the drawer.
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                drawerLayout.openDrawer(GravityCompat.START);
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // Check if the key event was the Back button and if there's history
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
-            webView.goBack();
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            presenter.onBackButtonPress();
             return true;
         }
         // If it wasn't the Back key or there's no web page history, bubble up to the default

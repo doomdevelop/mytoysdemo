@@ -15,5 +15,5 @@ public interface NavigationService {
 
     @Headers("x-api-key: hz7JPdKK069Ui1TRxxd1k8BQcocSVDkj219DVzzD")
     @GET("/api/navigation")
-    Call<Children> getNavigationEntries();
+    Call<NavigationEntries> getNavigationEntries();
 }

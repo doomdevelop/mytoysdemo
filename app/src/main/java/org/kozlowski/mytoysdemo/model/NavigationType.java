@@ -6,7 +6,7 @@ package org.kozlowski.mytoysdemo.model;
 
 public enum NavigationType {
 
-    SECTION("section"), NODE("node"), LINK("link");
+    SECTION("section"), NODE("node"), LINK("link"), EXTERNAL_LINK("external-link");
 
     private String type;
 

@@ -9,6 +9,9 @@ public final class Constants {
     public static final String BASE_HOST= "www.mytoys.de";
     public static final String NAVIGATION_ENDPOINT= "https://mytoysiostestcase1.herokuapp.com/";
     public static final String KEY_UNKNOWN_ERROR = "Unknown Error";
+    public static final int NAVIGATION_LINK = 0;
+    public static final int NAVIGATION_NODE = 1;
+    public static final int NAVIGATION_SECTION = 2;
 
 
 }

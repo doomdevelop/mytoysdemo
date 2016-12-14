@@ -33,7 +33,7 @@ public class ApiRepository {
     public ResponseWrapper getNavigationEntries() {
         NavigationService navigationService = serviceGenerator.createService(
             NavigationService.class, Constants.NAVIGATION_ENDPOINT);
-        Call<Children> navigationEntries = navigationService.getNavigationEntries();
+        Call<NavigationEntries> navigationEntries = navigationService.getNavigationEntries();
         return processResponse(navigationEntries);
     }
     @NonNull
