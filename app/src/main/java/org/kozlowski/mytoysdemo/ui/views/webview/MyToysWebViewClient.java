@@ -20,19 +20,15 @@ public class MyToysWebViewClient extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Log.d("WEBView ","load hist: "+Uri.parse(url).getHost());
         if (Uri.parse(url).getHost().contains(Constants.BASE_HOST)) {
-            Log.d("WEBView ","load url: "+url);
             view.loadUrl(url);
             return false;
         }
-        Log.e("WEBView ","wrong url: "+url);
         return true;
     }
 
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
-        Log.d("WEBView ",error.toString());
     }
 }

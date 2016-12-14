@@ -2,7 +2,6 @@ package org.kozlowski.mytoysdemo.ui.component.main;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 
 import org.kozlowski.mytoysdemo.data.remote.ResponseError;
 import org.kozlowski.mytoysdemo.model.Children;
@@ -13,12 +12,9 @@ import org.kozlowski.mytoysdemo.model.NavigationType;
 import org.kozlowski.mytoysdemo.ui.base.Presenter;
 import org.kozlowski.mytoysdemo.usecase.NavigationEntriesUseCase;
 import org.kozlowski.mytoysdemo.util.Constants;
-import org.w3c.dom.ls.LSInput;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 import javax.inject.Inject;
@@ -33,6 +29,7 @@ public class MainPresenter extends Presenter<MainView> {
     private NavigationEntries navigationEntries;
     private List<Children> childrenList = new ArrayList<>();
     private Stack<List<Children>> navigationStack = new Stack<>();
+    private Stack<Integer> parentChildrenPosition = new Stack<>();
     private boolean navigationOpen;
 
     public void setNavigationEntries(NavigationEntries navigationEntries) {
@@ -54,13 +51,15 @@ public class MainPresenter extends Presenter<MainView> {
     }
 
     public void onNavigationItemClicked(int position) {
-        NavigationType type = childrenList.get(position).getNavigationType();
+        Children children = childrenList.get(position);
+        NavigationType type = children.getNavigationType();
         switch (type) {
             case NODE:
                 //only this type can interact on click, and load new navigation content
-                navigationStack.push(childrenList);
-                prepareForNavigation(((ChildrenNode) childrenList.get(position)).getChildren());
-                view.setNavigationEntries(childrenList);
+                navigationStack.push(new ArrayList<>(childrenList));
+                parentChildrenPosition.push(position);
+                prepareForNavigation(((ChildrenNode) children).getChildren());
+                view.setNavigationEntries(childrenList, children.getLabel());
                 break;
             case LINK:
             case EXTERNAL_LINK:
@@ -68,7 +67,23 @@ public class MainPresenter extends Presenter<MainView> {
                 view.loadUrl(((ChildrenLink) childrenList.get(position)).getUrl());
                 break;
         }
+    }
 
+    public void onNavigationGoBack() {
+        String label = null;
+        if (navigationStack.size() > 0) {
+            this.childrenList = navigationStack.pop();
+            if (navigationStack.size() > 0) {
+                parentChildrenPosition.pop();
+                label = navigationStack.peek().get(parentChildrenPosition.peek()).getLabel();
+            }
+        }
+
+        view.setNavigationEntries(this.childrenList, label);
+    }
+
+    public void onNavigationHeaderCloseClicked() {
+        view.closeNavigation();
     }
 
     public void onOpenNavigation() {
@@ -100,9 +115,12 @@ public class MainPresenter extends Presenter<MainView> {
     private NavigationEntriesUseCase.CallBack callBack = new NavigationEntriesUseCase.CallBack() {
         @Override
         public void onSuccess(NavigationEntries navigationEntries) {
+            if (!isViewAlive.get()) {
+                return;
+            }
             prepareForNavigation(navigationEntries.getChildren());
             setNavigationEntries(navigationEntries);
-            view.setNavigationEntries(childrenList);
+            view.setNavigationEntries(childrenList, null);
         }
 
         @Override
