@@ -47,12 +47,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Presente
             presenter.finalizeView();
         }
     }
+
     protected abstract void initializePresenter();
 
     public abstract int getLayoutId();
 
     protected abstract void initializeDagger();
-
 
     private void initializeButterKnife() {
         ButterKnife.bind(this);
